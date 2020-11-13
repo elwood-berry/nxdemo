@@ -3,6 +3,8 @@ A demonstration of of the various dev tools NX provides. Nx is a set of extensib
 
 ### Table Of Contents
 1. [Creating An Application](https://github.com/elwood-berry/nxdemo#creating-an-application)
+1. [Add E2E Tests](https://github.com/elwood-berry/nxdemo#add-e2e-tests)
+1. [Display Todos]()
 1. [References](https://github.com/elwood-berry/nxdemo#references)
 
 ---
@@ -67,7 +69,7 @@ A function that returns 'cypress GET' css selector button with the id of "add-to
 export const getAddTodoButton = () => cy.get('button#add-todo');
 ```
 
-1. Now go to "[workspace name]/apps/[app name]-e2e/src/integration/app.spec.ts". This is where we will define our end to end tests. 
+**Now go to "[workspace name]/apps/[app name]-e2e/src/integration/app.spec.ts". This is where we will define our end to end tests.**
 ```javascript
   /*
   TEST #1 - Should Display ToDos
@@ -88,14 +90,71 @@ export const getAddTodoButton = () => cy.get('button#add-todo');
  });
 ```
 
-1. Stop the current app running and run this command
+**Stop the current app running and run this command**
 ```
 $ nx e2e nxdemo-e2e --watch
 ```
 
-1. Click on "Run All Specs"
+**Click on "Run All Specs"**
 
 As you progress through your application you will work on making these end-to-end tests pass.
+
+---
+
+### Display Todos
+We will run Cypress in the background while we fix our tests. 
+
+**Go to your app.component.ts (project/apps/nxdemo/src/app/app.component.ts)**
+```javascript
+import { Component } from '@angular/core';
+
+/*
+DECLARE AN INTERFACE
+*/
+interface Todo {
+  title: string;
+}
+@Component({
+  selector: 'project-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+})
+
+export class AppComponent {
+  title = 'nxdemo';
+  
+  // Add a 'todos' property to our component and define it as an array of our todo interface
+  todos: Todo[] = [
+    {
+      title: "Todo 1"
+    },
+    {
+      title: "Todo 2"
+    },
+  ]; 
+
+  // Define a method on our class called AddTodo
+  addTodo() {
+    this.todos.push({
+      // When called it should take out 'todos' array and push on to it a new object.
+      title: `New todo ${Math.floor(Math.random() * 1000)}`,
+    });
+  }
+
+
+}
+```
+
+**Go to your app.component.html (project/apps/nxdemo/src/app/app.component.html)** 
+```html
+<h1>To Dos</h1>
+<ul>
+  <li *ngFor="let t of todos" class="todo">{{ t.title }}</li>
+</ul>
+
+<button id="add-todo" (click)="addTodo()">Add Todo</button>
+```
+
 
 ---
 
