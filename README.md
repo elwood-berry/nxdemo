@@ -4,7 +4,16 @@ A demonstration of of the various dev tools NX provides. Nx is a set of extensib
 ### Table Of Contents
 1. [Creating An Application](https://github.com/elwood-berry/nxdemo#creating-an-application)
 1. [Add E2E Tests](https://github.com/elwood-berry/nxdemo#add-e2e-tests)
-1. [Display Todos]()
+1. [Display Todos](https://github.com/elwood-berry/nxdemo#display-todos)
+1. [Connect to an API]()
+1. [Add Node Application Implementing API]()
+1. [Proxy]()
+1. [Share Code]()
+1. [Create Libs]()
+1. [Dep Graph]()
+1. [Computation Caching]()
+1. [Test Affected Projects]()
+
 1. [References](https://github.com/elwood-berry/nxdemo#references)
 
 ---
@@ -155,6 +164,96 @@ export class AppComponent {
 <button id="add-todo" (click)="addTodo()">Add Todo</button>
 ```
 
+---
+
+### Connect to API
+Real world application do not live in isolation. They need APIs to talk to.
+
+**Update '../app/app.module.ts'**
+1. Import the 'HttpClientModule' module 
+1. Add the same module to the imports array
+```javascript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, HttpClientModule],
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
+
+**Update '../app/app.component.ts'**
+1. Import the 'HttpClient'
+1. Inject the client into the constructor
+1. Add the 'fetch()' method to our component
+
+```javascript 
+import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+interface Todo {
+  title: string;
+}
+
+@Component({
+  selector: 'myorg-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  todos: Todo[] = [];
+
+  constructor(private http: HttpClient) {
+    this.fetch();
+  }
+
+  // The purpose of this method is to make an HTTP request to our API and store the results in our Todo array
+  fetch() {
+    this.http.get<Todo[]>('/api/todos').subscribe((t) => (this.todos = t));
+  }
+
+  addTodo() {
+    this.http.post('/api/addTodo', {}).subscribe(() => {
+      this.fetch();
+    });
+  }
+}
+```
+
+
+---
+
+### Add Node Application Implementing API
+
+---
+
+### Proxy
+
+---
+
+### Share Code
+
+---
+
+### Create Libs
+
+---
+
+### Dep Graph
+
+---
+
+### Computation Caching
+
+---
+
+### Test Affected Projects
 
 ---
 
